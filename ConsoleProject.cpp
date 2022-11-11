@@ -16,6 +16,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		printf("%d:%s;%d\n",i,d.SetIndex(i),d.GetIndex(d.SetIndex(i)));
 	}
+	printf("%d = A1 ",d.SetID("A1"));
+	printf("%d = B2 ",d.SetID("B2"));
+	printf("%d = Z9 ",d.SetID("Z9"));
 	getch();
 	return 0;
 }
