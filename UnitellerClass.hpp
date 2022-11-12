@@ -6,6 +6,7 @@ const int ENABLECHARS = ALLCHARS - DISABLECHARS;
 const int ALLNUMS = 9; //использовано цифр
 const int ALLBLOCKS = 10; //Блоков индексов
 const int IDSLEN = ALLBLOCKS * 3 - 1 + 1;
+const int BLOCKMULT = ENABLECHARS * ALLNUMS;
 
 typedef char TUID[2];
 
@@ -67,7 +68,7 @@ int UnitellerID::SetID(char *ID)
 {
 	int i = 0;
 	int idx = 0;
-	for (i = 0; i < 3; i+=3)
+	for (i = 0; i < ALLBLOCKS; i+=3)
 	{
 		if (ID[i] >= 'A' && ID[i] <= 'Z')
 		{
@@ -75,7 +76,11 @@ int UnitellerID::SetID(char *ID)
 			if (ID[i+1] >= '1' && ID[i+1] <= '9' )
 			{
 				idx += ID[i+1] - '1';
-				if (ID[i+2] != '-')
+				if (ID[i+2] == '-')
+				{
+					idx = (idx+1) * BLOCKMULT;
+				}
+				else
 					break;
 			}
 			else
