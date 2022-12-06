@@ -1,12 +1,15 @@
 #include "UnitellerClass.hpp"
-#pragma hdrstop
-#pragma argsused
+//#pragma hdrstop
+//#pragma argsused
 
 #include <tchar.h>
 #include <stdio.h>
 #include <conio.h>
+#include <iostream>
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
+//{
+//int _tmain(int argc, _TCHAR* argv[])
 {
 	UnitellerID d;
 	//printf("%s %s\n",da,UnitellerID::Alphabet);
@@ -45,6 +48,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("++\n%s<<%d ",d++, d.Length);
 	printf("++\n%s<<%d ",d++, d.Length);
 
-	getch();
+	_getch();
 	return 0;
 }

@@ -1,5 +1,5 @@
 #include <tchar.h>
-		
+
 const int ALLCHARS = 26; //букв в афавите
 const int DISABLECHARS = 7; //количество запрещенных
 const int ENABLECHARS = ALLCHARS - DISABLECHARS;
@@ -17,8 +17,8 @@ class UnitellerID
 {
 protected:
 	TUID FID;
-	static char Alphabet[ENABLECHARS];
-	static char Disabled[DISABLECHARS];
+	static const char Alphabet[ENABLECHARS+1];// = "ff";
+	static const char Disabled[DISABLECHARS+1];
 	int FIndex;
 	int GetPos(char symb);
 	bool IfDisabled(char symb);
@@ -29,8 +29,8 @@ public:
 	//__fastcall ~UnitellerID();
 	int GetIndex(TUID ID1);
 	char* SetIndex(int Index);
-	void SetID(char *ID); //NULL TEMINAtED StriNg
-	char FIDS[IDSLEN]; //nullterm
+	void SetID(const char *ID);
+	char FIDS[IDSLEN];
 	int Length;
 	const char* operator ++(); //префиксные
 	const char* operator ++(int) //постфиксные
@@ -41,13 +41,13 @@ public:
 
 //В идентификаторах никогда не должны присутствовать
 //буквы «D», «F», «G», «J», «M», «Q», «V» и цифра «0».
-char UnitellerID::Alphabet[] = "ABCEHIKLNOPRSTUWXYZ";
-char UnitellerID::Disabled[] = "DFGJMQV";
+const char UnitellerID::Alphabet[] = "ABCEHIKLNOPRSTUWXYZ";
+const char UnitellerID::Disabled[] = "DFGJMQV";
 
 __fastcall UnitellerID::UnitellerID()
 {
 	Clear();
-    Length = 0;
+	Length = 0;
 }
 
 //__fastcall UnitellerID::~UnitellerID() { }
@@ -72,14 +72,14 @@ char* UnitellerID::SetIndex(int Index)
 	return FID;
 }
 
-void UnitellerID::SetID(char *ID)
+void UnitellerID::SetID(const char *ID)
 {
 	int i = 0;
 	for (i = 0; i < IDSLEN; i += 3)
 		if (ID[i] >= 'A' && ID[i] <= 'Z')
 		{
-			while (IfDisabled(ID[i]))
-				ID[i] = ID[i] - 1;
+			//while (IfDisabled(ID[i]))
+			//	ID[i] = ID[i] - 1;
 			if (ID[i+1] >= FIRSTNUM && ID[i+1] <= LASTNUM)
 			{
 				if (ID[i+2] != DELIMITER)
@@ -95,7 +95,7 @@ void UnitellerID::SetID(char *ID)
 			break;
 	if (i > 0)
 	{
-		FIDS[i-1] = '\0';
+		FIDS[i-1] = 0;
 		i -= 2;
 		Length = i;
 		for (; i >= 0; i--)
@@ -143,7 +143,7 @@ const char* UnitellerID::operator ++()
 		Length += 3;
 		FIDS[Length-1] = Alphabet[0];
 		FIDS[Length] = FIRSTNUM;
-		FIDS[Length+1] = '\0';
+		FIDS[Length+1] = 0;
 	}
 	return FIDS;
 }
@@ -159,8 +159,7 @@ int UnitellerID::GetPos(char symb)
 
 bool UnitellerID::IfDisabled(char symb)
 {
-	int i = 0;
-	for (; i < DISABLECHARS; i++)
+	for (int i = 0; i < DISABLECHARS; i++)
 	if (Disabled[i] == symb)
 		return true;
 	return false;
@@ -169,5 +168,5 @@ bool UnitellerID::IfDisabled(char symb)
 void UnitellerID::Clear(int from)
 {
 	for (; from < IDSLEN; from++)
-		FIDS[from] = '\0';
+		FIDS[from] = 0;
 }
