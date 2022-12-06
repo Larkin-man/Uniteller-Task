@@ -1,11 +1,9 @@
 #include "UnitellerClass.hpp"
-//#pragma hdrstop
-//#pragma argsused
 
 #include <tchar.h>
 #include <stdio.h>
-#include <conio.h>
-#include <iostream>
+//#include <conio.h>
+//#include <iostream>
 
 int main()
 //{
@@ -47,6 +45,6 @@ int main()
 	printf("++\n%s<<%d ",tst++, 0);
 	printf("++\n%s<<%d ",tst++, 0);
 
-	_getch();
+	//_getch();
 	return 0;
 }
