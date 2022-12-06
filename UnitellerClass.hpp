@@ -1,4 +1,5 @@
 #include <tchar.h>
+#include <mutex>
 
 const int ALLCHARS = 26; //букв в афавите
 const int DISABLECHARS = 7; //количество запрещенных
@@ -23,20 +24,16 @@ protected:
 	int GetPos(char symb);
 	bool IfDisabled(char symb);
 	void Clear(int from = 0);
+	std::mutex mtx;
+	char FIDS[IDSLEN];
+	int Length;
 
 public:
 	__fastcall UnitellerID();
 	//__fastcall ~UnitellerID();
-	int GetIndex(TUID ID1);
-	char* SetIndex(int Index);
-	void SetID(const char *ID);
-	char FIDS[IDSLEN];
-	int Length;
-	const char* operator ++(); //префиксные
-	const char* operator ++(int) //постфиксные
-	{
-		return this->operator ++();
-	}
+	void SetID(const char *ID);		
+	const char* operator ++(); 
+	const char* operator ++(int) {	return this->operator ++();	}
 };
 
 //В идентификаторах никогда не должны присутствовать
@@ -52,28 +49,9 @@ __fastcall UnitellerID::UnitellerID()
 
 //__fastcall UnitellerID::~UnitellerID() { }
 
-int UnitellerID::GetIndex(TUID ID1)
-{
-	FIndex = 0;
-	for (; FIndex < ENABLECHARS; FIndex++)
-		if (Alphabet[FIndex] == ID1[0])
-			break;
-	FIndex *= ALLNUMS;
-	FIndex += ID1[1] - FIRSTNUM;
-	return FIndex;
-}
-
-char* UnitellerID::SetIndex(int Index)
-{
-	FIndex = Index % ALLNUMS;
-	FID[1] = FIRSTNUM + FIndex;
-	FIndex = Index / ALLNUMS;
-	FID[0] = Alphabet[FIndex];
-	return FID;
-}
-
 void UnitellerID::SetID(const char *ID)
 {
+	std::lock_guard <std::mutex> lg(mtx);
 	int i = 0;
 	for (i = 0; i < IDSLEN; i += 3)
 		if (ID[i] >= 'A' && ID[i] <= 'Z')
@@ -106,6 +84,7 @@ void UnitellerID::SetID(const char *ID)
 
 const char* UnitellerID::operator ++()
 {
+	std::lock_guard <std::mutex> lg(mtx);
 	if (Length <= 0)
 		return FIDS;
 	int i = Length;
